@@ -1,10 +1,41 @@
 import { NavLink } from "react-router-dom";
-
+import useAuthValue from "../../../hooks/useAuthValue";
+import Swal from "sweetalert2";
 const NavBar = () => {
+  const { user, logOut } = useAuthValue();
   const navLinkStyle = ({ isActive }) =>
     `font-medium tracking-wide ${
       isActive ? " border-green-500 border-b-4" : ""
     }`;
+  const handleLogout = () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, logout!",
+      cancelButtonText: "Cancel",
+      customClass: {
+        confirmButton:
+          "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700",
+        cancelButton:
+          "bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500 ml-2",
+      },
+      buttonsStyling: false,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        logOut().then(() => {
+          Swal.fire({
+            title: "Logged out!",
+            text: "You have been successfully logged out.",
+            icon: "success",
+            confirmButtonColor: "#3085d6",
+            timer: 1500,
+          });
+        });
+      }
+    });
+  };
 
   const navOptions = (
     <>
@@ -24,6 +55,30 @@ const NavBar = () => {
           Order Food
         </NavLink>
       </li>
+      {user ? (
+        <>
+          <li>
+            <NavLink to="/secret">Secret</NavLink>
+          </li>
+
+          <li className="">
+            <button
+              onClick={handleLogout}
+              className="font-medium flex justify-center  items-center self-center tracking-wide "
+            >
+              Log out
+            </button>
+          </li>
+        </>
+      ) : (
+        <>
+          <li>
+            <NavLink className={navLinkStyle} to="/login">
+              Login
+            </NavLink>
+          </li>
+        </>
+      )}
     </>
   );
 
@@ -50,18 +105,15 @@ const NavBar = () => {
             </label>
             <ul
               tabIndex={0}
-              className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+              className="menu  menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 text-black/80 rounded-box w-52"
             >
               {navOptions}
             </ul>
           </div>
           <a className="btn btn-ghost normal-case text-xl">Bistro Boss</a>
         </div>
-        <div className="navbar-center hidden lg:flex">
+        <div className="navbar-center  justify-center items-center ms-auto hidden lg:flex">
           <ul className="menu menu-horizontal px-1">{navOptions}</ul>
-        </div>
-        <div className="navbar-end">
-          <a className="btn">Get started</a>
         </div>
       </div>
     </>

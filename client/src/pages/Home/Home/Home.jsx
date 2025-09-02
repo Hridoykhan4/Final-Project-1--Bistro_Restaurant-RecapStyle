@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet";
+
 import Banner from "../Banner/Banner";
 import CallUs from "../CallUs/CallUs";
 import Category from "../Category/Category";
@@ -10,10 +10,6 @@ import Testimonials from "../Testimonials/Testimonials";
 const Home = () => {
   return (
     <div>
-      <Helmet>
-        <meta charSet="utf-8" />
-        <title>Bistro | Home</title>
-      </Helmet>
       <Banner></Banner>
       <Category></Category>
       <OurSlogan></OurSlogan>

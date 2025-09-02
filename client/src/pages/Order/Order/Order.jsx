@@ -4,7 +4,6 @@ import "react-tabs/style/react-tabs.css";
 import orderBg from "../../../assets/shop/banner2.jpg";
 import Cover from "../../Shared/Cover/Cover";
 import useMenu from "../../../hooks/useMenu";
-import { Helmet } from "react-helmet";
 import FoodCard from "../../../components/FoodCard/FoodCard";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -25,7 +24,7 @@ const Order = () => {
   useEffect(() => {
     const newIndex = categories.indexOf(category);
     setTabIndex(newIndex === -1 ? 0 : newIndex);
-       setCurrentPage(1); 
+    setCurrentPage(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category]);
 
@@ -36,9 +35,7 @@ const Order = () => {
 
   return (
     <section>
-      <Helmet>
-        <title>Bistro | Order</title>
-      </Helmet>
+  
       <Cover
         coverBg={orderBg}
         title="Order Food"
@@ -63,15 +60,19 @@ const Order = () => {
 
           /* Pagination Logic */
           const totalPages = Math.ceil(items.length / itemsPerPage);
-           const startIndex = (currentPage - 1) * itemsPerPage;
-           const paginatedItems = items.slice(startIndex, startIndex + itemsPerPage)
-
+          const startIndex = (currentPage - 1) * itemsPerPage;
+          const paginatedItems = items.slice(
+            startIndex,
+            startIndex + itemsPerPage
+          );
 
           return (
             <TabPanel key={cat}>
               <div className="grid grid-cols-1 my-5 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {paginatedItems?.length > 0 ? (
-                  paginatedItems.map((item) => <FoodCard key={item._id} item={item} />)
+                  paginatedItems.map((item) => (
+                    <FoodCard key={item._id} item={item} />
+                  ))
                 ) : (
                   <p className="text-gray-500 italic">No items found</p>
                 )}

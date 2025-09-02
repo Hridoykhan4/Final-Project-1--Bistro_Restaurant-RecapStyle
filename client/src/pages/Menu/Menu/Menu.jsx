@@ -1,4 +1,3 @@
-import { Helmet } from "react-helmet";
 import Cover from "../../Shared/Cover/Cover";
 import menuCover from "../../../assets/menu/banner3.jpg";
 import useMenu from "../../../hooks/useMenu";
@@ -22,10 +21,6 @@ const Menu = () => {
   </>;
   return (
     <section>
-      <Helmet>
-        <meta charSet="utf-8" />
-        <title>Bistro | Menu</title>
-      </Helmet>
       {/* Main Cover */}
       <Cover
         title="Our Menu"
@@ -63,7 +58,7 @@ const Menu = () => {
         title="Salad"
         desc="Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
       ></MenuCategory>
-      {/* Soup */} 
+      {/* Soup */}
       <MenuCategory
         items={soup}
         coverBg={soupBg}
