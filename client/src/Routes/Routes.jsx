@@ -32,15 +32,12 @@ export const router = createBrowserRouter([
     element: <Login></Login>,
   },
   {
-    path: '/signUp',
-    element: <SignUp></SignUp>
+    path: "/signUp",
+    element: <SignUp></SignUp>,
   },
+
   {
-    path: '/secret',
-    element: <PrivateRoute>I am secret</PrivateRoute>
+    path: "*",
+    element: <ErrorPage></ErrorPage>,
   },
-  {
-    path: '*',
-    element: <ErrorPage></ErrorPage>
-  }
 ]);
