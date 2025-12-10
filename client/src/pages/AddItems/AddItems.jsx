@@ -1,10 +1,12 @@
 import { useForm } from "react-hook-form";
-import SectionTitle from "../../../Components/SectionTitle/SectionTitle";
+
 import { FaUtensils } from "react-icons/fa";
 
 import Swal from "sweetalert2";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import SectionTitle from "../../components/SectionTitle/SectionTitle";
+import { useNavigate } from "react-router-dom";
 const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 const AddItems = () => {
@@ -15,6 +17,7 @@ const AddItems = () => {
     reset,
   } = useForm();
   const axiosPublic = useAxiosPublic();
+  const nav = useNavigate();
   const axiosSecure = useAxiosSecure();
   const onSubmit = async ({ price, image, ...rest }) => {
     const imageFile = { image: image[0] };
@@ -36,7 +39,6 @@ const AddItems = () => {
           price: parseFloat(price),
           image: imgBBData.data.display_url,
         });
-        console.log(data, rest);
         if (data?.insertedId) {
           Swal.fire({
             title: `${rest?.name} added Successfully`,
@@ -45,6 +47,7 @@ const AddItems = () => {
             showConfirmButton: false,
           });
           reset();
+          nav(`/order/${rest?.category}`);
         }
       } catch (err) {
         console.log(err);
@@ -95,8 +98,8 @@ const AddItems = () => {
               <option value="">select category</option>
               <option value="salad">SALAD</option>
               <option value="pizza">Pizza</option>
-              <option value="soups">Soups</option>
-              <option value="desserts">Desserts</option>
+              <option value="soup">Soups</option>
+              <option value="dessert">Desserts</option>
               <option value="drinks">drinks</option>
             </select>
             <span className="text-red-600 ">{errors?.name?.message}</span>

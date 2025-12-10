@@ -25,6 +25,9 @@ const Dashboard = () => {
           <li>
             <NavLink to="/dashboard/addItems">Add Items</NavLink>
           </li>
+          <li>
+            <NavLink to="/dashboard/manageItems">Manage Items</NavLink>
+          </li>
         </>
       ) : (
         <>

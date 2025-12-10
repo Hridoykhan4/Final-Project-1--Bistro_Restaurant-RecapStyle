@@ -8,7 +8,7 @@ import soupBg from "../../../assets/menu/soup-bg.jpg";
 import SectionTitle from "../../../components/SectionTitle/SectionTitle";
 import MenuCategory from "../MenuCategory/MenuCategory";
 const Menu = () => {
-  const [menu, loading] = useMenu();
+  const {menu, loading} = useMenu();
   const offered = menu.filter((m) => m.category === "offered");
   const dessert = menu.filter((m) => m.category === "dessert");
   const pizza = menu.filter((m) => m.category === "pizza");

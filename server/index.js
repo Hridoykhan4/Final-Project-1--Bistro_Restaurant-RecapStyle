@@ -98,9 +98,15 @@ async function run() {
       res.send({ admin: user?.role === "admin" });
     });
 
-    app.delete("/users/:id", verifyToken, verifyValidEmail, verifyAdmin, async (req, res) => {
-      await usersCollection.deleteOne({ _id: new ObjectId(req.params.id) });
-    });
+    app.delete(
+      "/users/:id",
+      verifyToken,
+      verifyValidEmail,
+      verifyAdmin,
+      async (req, res) => {
+        await usersCollection.deleteOne({ _id: new ObjectId(req.params.id) });
+      }
+    );
 
     app.post("/users", async (req, res) => {
       const { email } = req.body;
@@ -112,13 +118,35 @@ async function run() {
 
     /* _______USER END___________ */
 
-      app.post("/menu", verifyToken, verifyAdmin, async (req, res) => {
-        res.send(await menuCollection.insertOne(req.body));
-      });
+    app.post("/menu", verifyToken, verifyAdmin, async (req, res) => {
+      res.send(await menuCollection.insertOne(req.body));
+    });
 
     app.get("/menu", async (req, res) => {
       res.send(await menuCollection.find().toArray());
     });
+    app.get("/menu/:id", async (req, res) => {
+      res.send(
+        await menuCollection.findOne({ _id: new ObjectId(req.params.id) })
+      );
+    });
+
+    app.delete("/menu/:id", async (req, res) => {
+      await cartCollection.deleteMany({ menuId: req.params.id });
+      res.send(
+        await menuCollection.deleteOne({ _id: new ObjectId(req.params.id) })
+      );
+    });
+
+    app.patch("/menu/:id", async (req, res) => {
+      res.send(
+        await menuCollection.updateOne(
+          { _id: new ObjectId(req.params.id) },
+          { $set: req.body }
+        )
+      );
+    });
+
     app.get("/reviews", async (req, res) => {
       res.send(await reviewCollection.find().toArray());
     });

@@ -14,7 +14,7 @@ const Order = () => {
   const [tabIndex, setTabIndex] = useState(
     initialIndex === -1 ? 0 : initialIndex
   );
-  const [menu] = useMenu();
+  const {menu} = useMenu();
   const navigate = useNavigate();
 
   /* Pagination State */

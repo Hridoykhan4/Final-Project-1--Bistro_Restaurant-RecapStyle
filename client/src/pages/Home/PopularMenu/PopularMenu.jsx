@@ -4,7 +4,7 @@ import useMenu from "../../../hooks/useMenu";
 import { Link } from "react-router-dom";
 
 const PopularMenu = () => {
-  const [menu, loading] = useMenu();
+  const {menu, loading} = useMenu();
   const popular = menu.filter((m) => m.category === "popular");
   if (loading) return;
   <>
