@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react";
+import useAxiosPublic from "./useAxiosPublic";
 
 const useMenu = () => {
       const [menu, setMenu] = useState([]);
+      const axiosPublic = useAxiosPublic()
       const [loading, setLoading] = useState(true);
       useEffect(() => {
-        fetch(`${import.meta.env.VITE_API_URL}/menu`)
-          .then((res) => res.json())
-          .then((data) => {
+        axiosPublic(`/menu`)
+          .then(({data}) => {
             setMenu(data);
             setLoading(false)
           });
-      }, []);
+
+
+
+      }, [axiosPublic]);
 
       return [menu, loading]
 

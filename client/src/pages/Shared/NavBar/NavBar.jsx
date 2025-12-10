@@ -1,9 +1,11 @@
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import useAuthValue from "../../../hooks/useAuthValue";
+import { FaCartArrowDown } from "react-icons/fa";
 import Swal from "sweetalert2";
+import useCart from "../../../hooks/useCart";
 const NavBar = () => {
   const { user, logOut } = useAuthValue();
-  console.log(user);
+  const { cartItems } = useCart();
   const navLinkStyle = ({ isActive }) =>
     `font-medium tracking-wide ${
       isActive ? " border-green-500 border-b-4" : ""
@@ -58,6 +60,15 @@ const NavBar = () => {
       </li>
       {user ? (
         <>
+          <li className="items-center btn btn-sm self-center">
+            <Link
+              to="/dashboard/cart"
+              className="flex justify-center items-center "
+            >
+              <FaCartArrowDown></FaCartArrowDown> {cartItems?.length || 0}
+              {/* <FaCartArrowDown /> <span className="badge badge-sm">+99</span> */}
+            </Link>
+          </li>
           <li className="">
             <button
               onClick={handleLogout}
@@ -107,9 +118,11 @@ const NavBar = () => {
               {navOptions}
             </ul>
           </div>
-          <a className="btn btn-ghost normal-case text-xl">Bistro Boss</a>
+          <Link to="/" className="btn btn-ghost normal-case text-xl">
+            Bistro Boss
+          </Link>
         </div>
-        <div className="navbar-center  justify-center items-center ms-auto hidden lg:flex">
+        <div className=" items-center  ms-auto hidden lg:flex">
           <ul className="menu space-x-4 menu-horizontal px-1">{navOptions}</ul>
         </div>
       </div>

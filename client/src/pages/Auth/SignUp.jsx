@@ -4,12 +4,17 @@ import useAuthValue from "../../hooks/useAuthValue";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import GoogleLogin from "../../components/AuthGoogle/GoogleLogin";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Spinner from "../../components/Spinner/Spinner";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 
 const SignUp = () => {
-  const { createUser, loading, setUser, user } = useAuthValue();
+  const { createUser, setUser, user, loading, updateUser } = useAuthValue();
   const nav = useNavigate();
+  const [uploading, setUploading] = useState(false);
+  const [file, setFile] = useState("");
+  const [preview, setPreview] = useState(null);
+  const axiosPublic = useAxiosPublic();
   const {
     register,
     handleSubmit,
@@ -23,30 +28,83 @@ const SignUp = () => {
     }
   }, [user, nav]);
 
-  const onSubmit = async (data) => {
-    const { email, password } = data;
-    try {
-      const result = await createUser(email, password);
-      setUser({
-        ...result?.user,
-        photoURL: result?.user?.photoURL,
-        displayName: result?.user?.displayName,
+  const handleFileChange = (e) => {
+    const selected = e.target.files[0];
+    if (!selected) return;
+    if (!selected?.type?.startsWith("image/"))
+      return Swal.fire({
+        icon: "error",
+        title: "Please upload a valid image file (JPG, PNG, etc.)",
+        timer: 1200,
+      });
+    if (selected?.size > 2 * 1024 * 1024)
+      return Swal.fire({
+        icon: "error",
+        title: "Image must be under 2MB",
+        timer: 1200,
       });
 
-      if (result?.user) {
-        Swal.fire({
-          position: "center",
-          icon: "success",
-          title: `Successfully Signup, Welcome ${result?.user?.displayName}`,
-          showConfirmButton: false,
-          timer: 1500,
+    setFile(selected);
+    setPreview(URL.createObjectURL(selected));
+  };
+
+  const onSubmit = async (data) => {
+    const { email, password, name } = data;
+    if (!file) {
+      return Swal.fire({
+        icon: "error",
+        title: "Please upload a profile picture",
+      });
+    }
+
+    try {
+      setUploading(true);
+      const { data: imgBBData } = await axiosPublic.post(
+        `https://api.imgbb.com/1/upload?key=${
+          import.meta.env.VITE_IMAGE_HOSTING_KEY
+        }`,
+        { image: file },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (imgBBData?.success) {
+        const { user } = await createUser(email, password);
+
+        setUser({
+          ...user,
+          displayName: name,
+          photoURL: imgBBData?.data?.display_url,
         });
-        nav("/");
+        await updateUser(name, imgBBData?.data?.display_url);
+        const { data } = await axiosPublic.post("/users", {
+          name: name,
+          email: user?.email,
+        });
+   
+        if (data?.insertedId) {
+          Swal.fire({
+            timer: 2000,
+            title: `Welcome ${name}`,
+            icon: 'success'
+          });
+          reset();
+          nav("/");
+        }
       }
     } catch (err) {
       console.log(err);
+      Swal.fire({
+            timer: 2000,
+            title: `${err?.message}`,
+            icon: 'error'
+          });
+    } finally {
+      setUploading(false);
     }
-    reset();
   };
   if (user) return <Navigate to="/"></Navigate>;
   if (loading) return <Spinner></Spinner>;
@@ -126,12 +184,35 @@ const SignUp = () => {
                   </small>
                 )}
 
+                <fieldset className="fieldset">
+                  <legend className="fieldset-legend">Pick Photo</legend>
+                  <input
+                    onChange={handleFileChange}
+                    type="file"
+                    className="file-input"
+                    accept="image/*"
+                  />
+                  <label className="label">
+                    {uploading ? "Uploading .... " : "Max size 2MB"}
+                  </label>
+                </fieldset>
+
                 <input
+                  disabled={!file}
                   value={loading ? "Sign up loading" : "Sign Up"}
                   type="submit"
                   className="btn btn-neutral w-full bg-sky-600 mt-4"
                 />
               </fieldset>
+              {preview && (
+                <div className="flex justify-center pb-4">
+                  <img
+                    src={preview}
+                    alt="Preview"
+                    className="w-24 h-24 rounded-lg object-cover border border-gray-200 shadow-md"
+                  />
+                </div>
+              )}
             </form>
             <GoogleLogin></GoogleLogin>
             <div className="text-center flex items-center justify-center gap-2 pb-4">

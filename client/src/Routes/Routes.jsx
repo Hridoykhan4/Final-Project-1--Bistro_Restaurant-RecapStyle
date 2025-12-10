@@ -7,6 +7,11 @@ import Login from "../pages/Auth/Login";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import SignUp from "../pages/Auth/SignUp";
 import PrivateRoute from "./PrivateRoute";
+import Dashboard from "../pages/Dashboard/Dashboard/Dashboard";
+import Cart from "../pages/Dashboard/Cart/Cart";
+import AllUsers from "../pages/Dashboard/AllUsers/AllUsers";
+import AdminRoute from "./AdminRoute";
+import AddItems from "../pages/AddItems/AddItems";
 
 export const router = createBrowserRouter([
   {
@@ -27,6 +32,39 @@ export const router = createBrowserRouter([
       },
     ],
   },
+  {
+    path: "/dashboard",
+    element: (
+      <PrivateRoute>
+        <Dashboard></Dashboard>
+      </PrivateRoute>
+    ),
+    children: [
+      {
+        path: "cart",
+        element: <Cart></Cart>,
+      },
+
+      // Admin routes
+
+      {
+        path: "allUsers",
+        element: (
+          <AdminRoute>
+            <AllUsers></AllUsers>
+          </AdminRoute>
+        ),
+      },
+
+      {
+        path: 'addItems',
+        element: <AdminRoute>
+          <AddItems></AddItems>
+        </AdminRoute>
+      }
+    ],
+  },
+
   {
     path: "/login",
     element: <Login></Login>,

@@ -1,0 +1,6 @@
+a.active{
+   border-radius: 2rem;
+   background-color: blue;
+   width: fit-content;
+   padding:  0.5rem 2rem ;
+}

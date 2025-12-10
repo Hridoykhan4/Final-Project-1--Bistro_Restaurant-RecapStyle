@@ -8,16 +8,17 @@ import Swal from "sweetalert2";
 import GoogleLogin from "../../components/AuthGoogle/GoogleLogin";
 import Spinner from "../../components/Spinner/Spinner";
 
+// const sitekey = import.meta.env.VITE_Recapcha_Site_key
 const Login = () => {
   const nav = useNavigate();
   const { signUser, user, loading } = useAuthValue();
   const [captchaValue, setCaptchaValue] = useState(null);
   const location = useLocation();
   const from = location?.state?.from?.pathname || "/";
+console.log(from, loading);
   const handleCaptchaChange = (value) => {
     setCaptchaValue(value);
   };
-
   useEffect(() => {
     if (user) {
       nav(from, { replace: true });
@@ -96,7 +97,7 @@ const Login = () => {
                   </small>
                 )}
                 <ReCAPTCHA
-                  sitekey="6LdBFrkrAAAAAFok0XsGgqWa-G1aVgu8630uM_NF"
+                  sitekey={import.meta.env.VITE_Recapcha_Site_key}
                   onChange={handleCaptchaChange}
                 />
                 <input

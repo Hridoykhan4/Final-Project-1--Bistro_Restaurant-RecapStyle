@@ -1,14 +1,19 @@
 import Swal from "sweetalert2";
 import useAuthValue from "../../hooks/useAuthValue";
 import { useNavigate } from "react-router-dom";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 
 const GoogleLogin = ({ from }) => {
   const nav = useNavigate();
   const { googleLogin, setUser } = useAuthValue();
+  const axiosPublic = useAxiosPublic()
   const handleGoogleLogin = async () => {
     try {
       const result = await googleLogin();
       if (result?.user) {
+        const userInfo = { name: result?.user?.displayName, email: result.user?.email };
+        const {data} = await axiosPublic.post('/users', userInfo);
+        console.log(data);
         setUser({
           ...result?.user,
           photoURL: result?.user?.photoURL,
